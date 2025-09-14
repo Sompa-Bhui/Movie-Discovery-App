@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Movie Discovery App</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>🎬 Movie Discovery</h1>
+        <button id="toggle-theme">🌙</button>
+    </header>
+
+    <section class="search">
+        <input type="text" id="search-input" placeholder="Search for movies..." />
+    </section>
+
+    <section id="movies-container" class="movies-grid">
+        <!-- Movies will be injected here -->
+    </section>
+
+    <!-- Modal for movie details -->
+    <div id="movie-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-overview"></p>
+            <p><strong>Release Date:</strong> <span id="modal-release"></span></p>
+            <p><strong>Rating:</strong> <span id="modal-rating"></span></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
