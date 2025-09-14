@@ -1,70 +1,23 @@
-const API_KEY = 'YOUR_TMDB_API_KEY'; // ← Replace with your TMDb API Key
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+const API_KEY = 'abcd1234yourapikeyhere';  // ✅ Apni real TMDb API key yahan daalein
+const searchInput = document.querySelector('#search');
+const moviesContainer = document.querySelector('#movies');
 
-const moviesContainer = document.getElementById('movies-container');
-const searchInput = document.getElementById('search-input');
-const movieModal = document.getElementById('movie-modal');
-const modalTitle = document.getElementById('modal-title');
-const modalOverview = document.getElementById('modal-overview');
-const modalRelease = document.getElementById('modal-release');
-const modalRating = document.getElementById('modal-rating');
-const closeModalBtn = document.getElementById('close-modal');
-const toggleThemeBtn = document.getElementById('toggle-theme');
-
-// Fetch and display trending movies
-async function getTrendingMovies() {
-    const res = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`);
-    const data = await res.json();
-    displayMovies(data.results);
-}
-
-// Search movies
-searchInput.addEventListener('input', async () => {
+searchInput.addEventListener('input', () => {
     const query = searchInput.value.trim();
     if (query.length === 0) {
-        getTrendingMovies();
+        moviesContainer.innerHTML = '';
         return;
     }
-    const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
-    const data = await res.json();
-    displayMovies(data.results);
+
+    fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            moviesContainer.innerHTML = data.results.map(movie => `
+                <div class="movie-card">
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <h3>${movie.title}</h3>
+                </div>
+            `).join('');
+        })
+        .catch(err => console.error('Error fetching movies:', err));
 });
-
-// Display movie cards
-function displayMovies(movies) {
-    moviesContainer.innerHTML = '';
-    movies.forEach(movie => {
-        const movieEl = document.createElement('div');
-        movieEl.classList.add('movie-card');
-        movieEl.innerHTML = `
-            <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}" />
-            <h3>${movie.title}</h3>
-        `;
-
-        movieEl.addEventListener('click', () => showMovieDetails(movie));
-
-        moviesContainer.appendChild(movieEl);
-    });
-}
-
-// Show movie details in modal
-function showMovieDetails(movie) {
-    modalTitle.textContent = movie.title;
-    modalOverview.textContent = movie.overview;
-    modalRelease.textContent = movie.release_date;
-    modalRating.textContent = movie.vote_average;
-    movieModal.classList.remove('hidden');
-}
-
-// Close modal
-closeModalBtn.addEventListener('click', () => {
-    movieModal.classList.add('hidden');
-});
-
-// Dark/Light mode toggle
-toggleThemeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-});
-
-getTrendingMovies();
